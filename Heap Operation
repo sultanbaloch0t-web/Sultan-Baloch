@@ -1,0 +1,57 @@
+class MinHeap:
+    def __init__(self):
+        self.data = []
+    def insert(self, val):
+        self.data.append(val)
+        idx = len(self.data) - 1
+        while idx > 0:
+            p = (idx - 1) // 2
+            if self.data[idx] < self.data[p]:
+                self.data[idx], self.data[p] = self.data[p], self.data[idx]
+                idx = p
+            else:
+                break
+    def extract_min(self):
+        if not self.data:
+            return None
+        ans = self.data[0]
+        last = self.data.pop()
+        if self.data:
+            self.data[0] = last
+            self._fix_down(0)
+        return ans
+    def get_min(self):
+        return self.data[0] if self.data else None
+    def size(self):
+        return len(self.data)
+    def build_heap(self, arr):
+        self.data = arr[:]
+        n = len(self.data)
+        for i in range((n // 2) - 1, -1, -1):
+            self._fix_down(i)
+    def _fix_down(self, i):
+        n = len(self.data)
+        while True:
+            l = 2 * i + 1
+            r = 2 * i + 2
+            small = i
+            if l < n and self.data[l] < self.data[small]:
+                small = l
+            if r < n and self.data[r] < self.data[small]:
+                small = r
+            if small != i:
+                self.data[i], self.data[small] = self.data[small], self.data[i]
+                i = small
+            else:
+                break
+if __name__ == "__main__":
+    h = MinHeap()
+    nums = [5, 3, 8, 1, 2, 7]
+    for x in nums:
+        h.insert(x)
+        print("After insert", x, ":", h.data)
+    while h.size() > 0:
+        print("min:", h.extract_min(), "left:", h.data)
+    arr = [9, 4, 7, 1, 0, 3, 2]
+    h.build_heap(arr)
+    print("Built heap:", h.data)
